@@ -8,6 +8,9 @@
 
 import UIKit
 import CoreData
+import Firebase
+import GooglePlaces
+//AIzaSyCowhFQS2sZBuheTKZezB-4oRR-_QW-Sjw
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FIRApp.configure()
+        var ref: FIRDatabaseReference!
+        ref = FIRDatabase.database().reference()
+        GMSPlacesClient.provideAPIKey("AIzaSyCowhFQS2sZBuheTKZezB-4oRR-_QW-Sjw")
+        GMSServices.provideAPIKey("AIzaSyCowhFQS2sZBuheTKZezB-4oRR-_QW-Sjw")
         return true
     }
 
