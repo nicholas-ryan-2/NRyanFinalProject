@@ -24,6 +24,7 @@ class OverviewViewController: UIViewController {
     var chosenPlaceLong = 0.0
     var chosenPlaceAddress = ""
     
+    @IBOutlet weak var locationTextField: UITextView!
     struct NewPerson {
         var name = ""
         var latitude = 0.0
@@ -124,13 +125,20 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         }
         
         print("Place name \(place.name)")
-        chosenPlaceLat = place.coordinate.latitude
-        chosenPlaceLong = place.coordinate.longitude
-        
+        self.chosenPlaceLat = place.coordinate.latitude
+        self.chosenPlaceLong = place.coordinate.longitude
+        self.chosenPlaceName = place.name
+        self.chosenPlaceAddress = place.formattedAddress!
+        self.locationTextField.text = "\(place.name) - \(self.chosenPlaceAddress)"
         print("Place address \(place.formattedAddress)")
         print("Place attributions \(place.attributions)")
     })
 }
+    
+    func calculateDistanceFromChosenPoint(latitude: Double, longitude: Double, array: Array<NewPerson>) {
+        
+        tableView.reloadData()
+    }
 
 //Function to find places given a location
 
