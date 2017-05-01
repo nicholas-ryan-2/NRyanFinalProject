@@ -19,6 +19,11 @@ class OverviewViewController: UIViewController {
     var newFormattedAddressPlaceholder = ""
     var newDistancePlaceholder = 0.0
     
+    var chosenPlaceName = ""
+    var chosenPlaceLat = 0.0
+    var chosenPlaceLong = 0.0
+    var chosenPlaceAddress = ""
+    
     struct NewPerson {
         var name = ""
         var latitude = 0.0
@@ -39,7 +44,7 @@ class OverviewViewController: UIViewController {
         tableView.reloadData()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -62,7 +67,7 @@ class OverviewViewController: UIViewController {
         var longitudeArray = [Double]()
         for location in arrayOfLocations {
             print(location)
-        latitudeArray.append(Double(separateLatitudeAndLongitude(coordinates: String(describing: location)).0))
+            latitudeArray.append(Double(separateLatitudeAndLongitude(coordinates: String(describing: location)).0))
             longitudeArray.append(Double(separateLatitudeAndLongitude(coordinates: String(describing: location)).1))
         }
         let averageLat = computeAverage(array: latitudeArray)
@@ -71,72 +76,86 @@ class OverviewViewController: UIViewController {
         return averageCoordinates
     }
     
-    override func unwind(for unwindSegue: UIStoryboardSegue, towardsViewController subsequentVC: UIViewController) {
-        print("***** Unwind before adding \(personArray)")
-        addPersonToArray(name: newNamePlaceholder, latitude: newLatPlaceholder, longitude: newLongPlaceholder, formattedAddress: newFormattedAddressPlaceholder, distance: newDistancePlaceholder)
-        print("***** Unwind after adding \(personArray)")
-    }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "AddPerson" {
-            print("***** Prepare before segue for adding \(personArray)")
+    @IBAction func unwindFromStudentDetailView(sender: UIStoryboardSegue) {
+        if let sourceViewController = sender.source as?
+            NewPersonViewController {
+            let name = sourceViewController.nameField.text
+            let lat = sourceViewController.newPersonLatitude
+            let long = sourceViewController.newPersonLongitude
+            let distance = sourceViewController.newPersonDistance
+            let formattedAddress = sourceViewController.newPersonFormattedAddress
+            addPersonToArray(name: name!, latitude: lat, longitude: long, formattedAddress: formattedAddress, distance: distance)
+            let newIndexPath = IndexPath(row: personArray.count-1, section: 0)
+            tableView.insertRows(at: [newIndexPath], with: .bottom)
+            // Bonus below - scroll to the end!
+            tableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
         }
     }
+
+
+override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "AddPerson" {
+        print("***** Prepare before segue for adding \(personArray)")
+    }
+}
+
+
+@IBAction func findLocation(_ sender: UIButton) {
+    let averageArray = findAverageLocation(arrayOfLocations: convertPeopleArrayToLocationArray()).components(separatedBy: ", ")
+    let center = CLLocationCoordinate2D(latitude: Double(averageArray[0])!, longitude: Double(averageArray[1])!)
+    let northEast = CLLocationCoordinate2D(latitude: center.latitude + 0.001,
+                                           longitude: center.longitude + 0.001)
+    let southWest = CLLocationCoordinate2D(latitude: center.latitude - 0.001,
+                                           longitude: center.longitude - 0.001)
+    let viewport = GMSCoordinateBounds(coordinate: northEast, coordinate: southWest)
+    let config = GMSPlacePickerConfig(viewport: viewport)
+    let placePicker = GMSPlacePicker(config: config)
     
-    
-    @IBAction func findLocation(_ sender: UIButton) {
-        let averageArray = findAverageLocation(arrayOfLocations: convertPeopleArrayToLocationArray()).components(separatedBy: ", ")
-        let center = CLLocationCoordinate2D(latitude: Double(averageArray[0])!, longitude: Double(averageArray[1])!)
-        let northEast = CLLocationCoordinate2D(latitude: center.latitude + 0.001,
-                                               longitude: center.longitude + 0.001)
-        let southWest = CLLocationCoordinate2D(latitude: center.latitude - 0.001,
-                                               longitude: center.longitude - 0.001)
-        let viewport = GMSCoordinateBounds(coordinate: northEast, coordinate: southWest)
-        let config = GMSPlacePickerConfig(viewport: viewport)
-        let placePicker = GMSPlacePicker(config: config)
+    placePicker.pickPlace(callback: { (place, error) -> Void in
+        if let error = error {
+            print("Pick Place error: \(error.localizedDescription)")
+            return
+        }
         
-        placePicker.pickPlace(callback: { (place, error) -> Void in
-            if let error = error {
-                print("Pick Place error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let place = place else {
-                print("No place selected")
-                return
-            }
-            
-            print("Place name \(place.name)")
-            
-            print("Place address \(place.formattedAddress)")
-            print("Place attributions \(place.attributions)")
-        })
-    }
-    
-    //Function to find places given a location
-    
-    func separateLatitudeAndLongitude(coordinates: String) -> (Double, Double) {
-        var combinedArray = coordinates.components(separatedBy: ",")
-        print(combinedArray)
-        print(coordinates)
-        var latitude = Double(combinedArray[0])
-        var longitude = Double(combinedArray[1])
-        print(latitude)
-        print(longitude)
-        return (latitude!, longitude!)
-    }
-    
-    func computeAverage(array: Array<Double>) -> Double {
-        var runningSum = 0.0
-        var count = 0.0
-        for value in array {
-            runningSum += value
-            count += 1.0
+        guard let place = place else {
+            print("No place selected")
+            return
         }
-        let average = runningSum / count
-        print(average)
-        return average
+        
+        print("Place name \(place.name)")
+        chosenPlaceLat = place.coordinate.latitude
+        chosenPlaceLong = place.coordinate.longitude
+        
+        print("Place address \(place.formattedAddress)")
+        print("Place attributions \(place.attributions)")
+    })
+}
+
+//Function to find places given a location
+
+func separateLatitudeAndLongitude(coordinates: String) -> (Double, Double) {
+    var combinedArray = coordinates.components(separatedBy: ",")
+    print(combinedArray)
+    print(coordinates)
+    var latitude = Double(combinedArray[0])
+    var longitude = Double(combinedArray[1])
+    print(latitude)
+    print(longitude)
+    return (latitude!, longitude!)
+}
+
+func computeAverage(array: Array<Double>) -> Double {
+    var runningSum = 0.0
+    var count = 0.0
+    for value in array {
+        runningSum += value
+        count += 1.0
     }
+    let average = runningSum / count
+    print(average)
+    return average
+}
 }
 
 extension OverviewViewController: UITableViewDelegate, UITableViewDataSource {

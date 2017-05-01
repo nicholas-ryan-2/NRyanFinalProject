@@ -26,6 +26,12 @@ class NewPersonViewController: UIViewController {
     var overviewViewController = OverviewViewController()
     var newPerson = OverviewViewController.NewPerson()
     var didChooseLocation = false
+    var newPersonName = ""
+    var newPersonLatitude = 0.0
+    var newPersonLongitude = 0.0
+    var newPersonDistance = 0.0
+    var newPersonFormattedAddress = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("***** viewDidLoad NPVC \(overviewViewController.personArray)")
@@ -53,12 +59,14 @@ class NewPersonViewController: UIViewController {
             let controller = segue.destination as! OverviewViewController
             print("***** Prepare before segue and before append \(controller.personArray)")
             if didChooseLocation == true {
+                print("**** Working 2")
                 if let name = nameTest {
-                    controller.newNamePlaceholder = nameField.text!
-                    controller.newLatPlaceholder = newPerson.latitude
-                    controller.newLongPlaceholder = newPerson.longitude
-                    controller.newDistancePlaceholder = 0.0
-                    controller.newFormattedAddressPlaceholder = newPerson.formattedAddress
+                    print("***** Working")
+                    newPersonName = nameField.text!
+                    newPersonLatitude = newPerson.latitude
+                    newPersonLongitude = newPerson.longitude
+                    newPersonDistance = 0.0
+                    newPersonFormattedAddress = newPerson.formattedAddress
                 }
                 //working append
                 controller.personArray.append(OverviewViewController.NewPerson(name: nameField.text!, latitude: newPerson.latitude, longitude: newPerson.longitude, formattedAddress: newPerson.formattedAddress, distance: 0.0))
@@ -87,6 +95,9 @@ extension NewPersonViewController: GMSAutocompleteViewControllerDelegate {
         newPerson.latitude = Double(lat)
         newPerson.longitude = Double(long)
         newPerson.formattedAddress = place.formattedAddress!
+        newPersonLatitude = Double(lat)
+        newPersonLongitude = Double(long)
+        newPersonFormattedAddress = place.formattedAddress!
         didChooseLocation = true
     }
     

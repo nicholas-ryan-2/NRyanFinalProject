@@ -179,7 +179,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="SavePerson" id="IfN-75-41B"/>
+                                    <segue destination="L5F-6M-jUZ" kind="unwind" unwindAction="unwindFromStudentDetailViewWithSender:" id="aeB-uu-GsQ"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -193,6 +193,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DkO-L8-WtE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="L5F-6M-jUZ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2128.8000000000002" y="-3.1484257871064472"/>
         </scene>
@@ -215,7 +216,4 @@
             <point key="canvasLocation" x="133.59999999999999" y="138.98050974512745"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="IfN-75-41B"/>
-    </inferredMetricsTieBreakers>
 </document>
