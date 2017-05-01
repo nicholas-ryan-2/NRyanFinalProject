@@ -10,11 +10,10 @@ import UIKit
 
 class PeopleCell: UITableViewCell {
     
-    @IBOutlet weak var cellIcon: UIImageView!
-    @IBOutlet weak var cellStatus: UILabel!
-    @IBOutlet weak var cellLocation: UILabel!
+    @IBOutlet weak var cellDistance: UILabel!
+    @IBOutlet weak var cellAddress: UILabel!
     @IBOutlet weak var cellName: UILabel!
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -26,11 +25,10 @@ class PeopleCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configurePeopleCell(icon: String, name: String, latitude: Double, longitude: Double, status: String) {
-        cellLocation.text = String(latitude) + ", " + String(longitude)
-        cellStatus.text = status
+    func configurePeopleCell(name: String, latitude: Double, longitude: Double, address: String) {
+        print(name)
+        cellDistance.text = "0.0 miles"
+        cellAddress.text = address
         cellName.text = name
-        cellIcon.image = UIImage(named: icon)
     }
-
 }

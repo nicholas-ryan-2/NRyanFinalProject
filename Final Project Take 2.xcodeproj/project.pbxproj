@@ -16,6 +16,7 @@
 		485D90F11EAEA5A4003CB8E6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 485D90F01EAEA5A4003CB8E6 /* GoogleService-Info.plist */; };
 		485D90F31EAEA5EF003CB8E6 /* People.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485D90F21EAEA5EF003CB8E6 /* People.swift */; };
 		485D90F51EAEAAC4003CB8E6 /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485D90F41EAEAAC4003CB8E6 /* PeopleCell.swift */; };
+		4863E9221EB64544007ED045 /* NewPersonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4863E9211EB64544007ED045 /* NewPersonViewController.swift */; };
 		583011CAB830AB9AEE7C0FEF /* Pods_Final_Project_Take_2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73899C33F0F4D607252BB4D /* Pods_Final_Project_Take_2.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		485D90F01EAEA5A4003CB8E6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		485D90F21EAEA5EF003CB8E6 /* People.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = People.swift; sourceTree = "<group>"; };
 		485D90F41EAEAAC4003CB8E6 /* PeopleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
+		4863E9211EB64544007ED045 /* NewPersonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPersonViewController.swift; sourceTree = "<group>"; };
 		D73899C33F0F4D607252BB4D /* Pods_Final_Project_Take_2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Final_Project_Take_2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -71,6 +73,7 @@
 			children = (
 				485D90D91EAE9D9E003CB8E6 /* AppDelegate.swift */,
 				485D90DB1EAE9D9E003CB8E6 /* OverviewViewController.swift */,
+				4863E9211EB64544007ED045 /* NewPersonViewController.swift */,
 				485D90F21EAEA5EF003CB8E6 /* People.swift */,
 				485D90F41EAEAAC4003CB8E6 /* PeopleCell.swift */,
 				485D90DD1EAE9D9E003CB8E6 /* Main.storyboard */,
@@ -225,6 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4863E9221EB64544007ED045 /* NewPersonViewController.swift in Sources */,
 				485D90F31EAEA5EF003CB8E6 /* People.swift in Sources */,
 				485D90DC1EAE9D9E003CB8E6 /* OverviewViewController.swift in Sources */,
 				485D90F51EAEAAC4003CB8E6 /* PeopleCell.swift in Sources */,

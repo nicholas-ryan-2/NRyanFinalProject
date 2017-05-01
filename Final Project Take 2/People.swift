@@ -10,13 +10,7 @@ import Foundation
 
 class People {
     
-    struct NewPerson {
-        var name = ""
-        var image = ""
-        var status = ""
-        var latitude = 0.0
-        var longitude = 0.0
-    }
+    
     
 
 }

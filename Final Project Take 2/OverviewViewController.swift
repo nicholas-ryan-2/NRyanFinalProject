@@ -12,15 +12,31 @@ import GooglePlacePicker
 
 class OverviewViewController: UIViewController {
     
-    var people = People()
-    var personArray = [People.NewPerson()]
+    var personArray = [NewPerson]()
+    var newNamePlaceholder = ""
+    var newLatPlaceholder = 0.0
+    var newLongPlaceholder = 0.0
+    var newFormattedAddressPlaceholder = ""
+    var newDistancePlaceholder = 0.0
+    
+    struct NewPerson {
+        var name = ""
+        var latitude = 0.0
+        var longitude = 0.0
+        var formattedAddress = ""
+        var distance = 0.0
+    }
+    func addPersonToArray(name: String, latitude: Double, longitude: Double, formattedAddress: String, distance: Double) {
+        var newPerson = NewPerson(name: name, latitude: latitude, longitude: longitude, formattedAddress: formattedAddress, distance: distance)
+        personArray.insert(newPerson, at: personArray.count)
+    }
     
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        populateFakePersonArray(numberOfPeople: 5)
+        tableView.reloadData()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -32,25 +48,12 @@ class OverviewViewController: UIViewController {
         
     }
     
-    func populateFakePersonArray(numberOfPeople: Int) {
-        var count = 0
-        repeat {
-            var newPerson = People.NewPerson()
-            newPerson.name = "Placeholder \(count)"
-            newPerson.latitude = 40.0 + Double(count)
-            newPerson.longitude = 40.0 - Double(count)
-            newPerson.status = "Waiting"
-            newPerson.image = "placeholder"
-            count += 1
-            personArray.append(newPerson)
-        } while count < numberOfPeople
-    }
-    
     func convertPeopleArrayToLocationArray() -> Array<Any> {
         var locationArray = [String]()
         for person in personArray {
             locationArray.append(String(person.latitude) + "," + String(person.longitude))
         }
+        print(locationArray)
         return locationArray
     }
     
@@ -58,6 +61,7 @@ class OverviewViewController: UIViewController {
         var latitudeArray = [Double]()
         var longitudeArray = [Double]()
         for location in arrayOfLocations {
+            print(location)
         latitudeArray.append(Double(separateLatitudeAndLongitude(coordinates: String(describing: location)).0))
             longitudeArray.append(Double(separateLatitudeAndLongitude(coordinates: String(describing: location)).1))
         }
@@ -67,23 +71,64 @@ class OverviewViewController: UIViewController {
         return averageCoordinates
     }
     
+    override func unwind(for unwindSegue: UIStoryboardSegue, towardsViewController subsequentVC: UIViewController) {
+        print("***** Unwind before adding \(personArray)")
+        addPersonToArray(name: newNamePlaceholder, latitude: newLatPlaceholder, longitude: newLongPlaceholder, formattedAddress: newFormattedAddressPlaceholder, distance: newDistancePlaceholder)
+        print("***** Unwind after adding \(personArray)")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AddPerson" {
+            print("***** Prepare before segue for adding \(personArray)")
+        }
+    }
+    
     
     @IBAction func findLocation(_ sender: UIButton) {
-        findAverageLocation(arrayOfLocations: convertPeopleArrayToLocationArray())
+        let averageArray = findAverageLocation(arrayOfLocations: convertPeopleArrayToLocationArray()).components(separatedBy: ", ")
+        let center = CLLocationCoordinate2D(latitude: Double(averageArray[0])!, longitude: Double(averageArray[1])!)
+        let northEast = CLLocationCoordinate2D(latitude: center.latitude + 0.001,
+                                               longitude: center.longitude + 0.001)
+        let southWest = CLLocationCoordinate2D(latitude: center.latitude - 0.001,
+                                               longitude: center.longitude - 0.001)
+        let viewport = GMSCoordinateBounds(coordinate: northEast, coordinate: southWest)
+        let config = GMSPlacePickerConfig(viewport: viewport)
+        let placePicker = GMSPlacePicker(config: config)
+        
+        placePicker.pickPlace(callback: { (place, error) -> Void in
+            if let error = error {
+                print("Pick Place error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let place = place else {
+                print("No place selected")
+                return
+            }
+            
+            print("Place name \(place.name)")
+            
+            print("Place address \(place.formattedAddress)")
+            print("Place attributions \(place.attributions)")
+        })
     }
     
     //Function to find places given a location
     
-    func separateLatitudeAndLongitude(coordinates: String) -> (Int, Int) {
+    func separateLatitudeAndLongitude(coordinates: String) -> (Double, Double) {
         var combinedArray = coordinates.components(separatedBy: ",")
-        var latitude = Int(combinedArray[0])
-        var longitude = Int(combinedArray[1])
+        print(combinedArray)
+        print(coordinates)
+        var latitude = Double(combinedArray[0])
+        var longitude = Double(combinedArray[1])
+        print(latitude)
+        print(longitude)
         return (latitude!, longitude!)
     }
     
     func computeAverage(array: Array<Double>) -> Double {
         var runningSum = 0.0
-        var count = 1.0
+        var count = 0.0
         for value in array {
             runningSum += value
             count += 1.0
@@ -101,7 +146,8 @@ extension OverviewViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Person", for: indexPath) as! PeopleCell
-        cell.configurePeopleCell(icon: personArray[indexPath.row].image, name: personArray[indexPath.row].name, latitude: personArray[indexPath.row].latitude, longitude: personArray[indexPath.row].longitude, status: personArray[indexPath.row].status)
+        cell.configurePeopleCell(name: personArray[indexPath.row].name, latitude: personArray[indexPath.row].latitude, longitude: personArray[indexPath.row].longitude, address: personArray[indexPath.row].formattedAddress)
+        print(personArray[indexPath.row].name)
         return cell
     }
     
