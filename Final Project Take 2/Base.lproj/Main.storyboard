@@ -68,7 +68,7 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem title="Edit" id="S9l-z5-S5x"/>
+                                    <barButtonItem enabled="NO" title="Edit" id="S9l-z5-S5x"/>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="wXf-8Z-Gwg"/>
                                     <barButtonItem systemItem="add" id="oFI-rf-fO9">
                                         <connections>
@@ -79,9 +79,9 @@
                                 </items>
                             </toolbar>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HQi-fq-6ol">
-                                <rect key="frame" x="164" y="593" width="46" height="30"/>
+                                <rect key="frame" x="114" y="593" width="146" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Find Central Location"/>
                                 <connections>
                                     <action selector="findLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YBn-O8-jTp"/>
                                 </connections>

@@ -25,9 +25,14 @@ class PeopleCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configurePeopleCell(name: String, latitude: Double, longitude: Double, address: String) {
+    func configurePeopleCell(name: String, latitude: Double, longitude: Double, address: String, distance: Double, placeChosen: Bool) {
         print(name)
-        cellDistance.text = "0.0 miles"
+        if placeChosen == false {
+            cellDistance.isHidden = true
+        } else {
+            cellDistance.isHidden = false
+        }
+        cellDistance.text = "\(distance) miles from chosen location"
         cellAddress.text = address
         cellName.text = name
     }

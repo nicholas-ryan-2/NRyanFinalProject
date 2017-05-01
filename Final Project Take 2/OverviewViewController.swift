@@ -18,11 +18,14 @@ class OverviewViewController: UIViewController {
     var newLongPlaceholder = 0.0
     var newFormattedAddressPlaceholder = ""
     var newDistancePlaceholder = 0.0
+    var milesPerDegreeLatitude = 69.0
+    var milesPerDegreeLongitude = 54.6
     
     var chosenPlaceName = ""
     var chosenPlaceLat = 0.0
     var chosenPlaceLong = 0.0
     var chosenPlaceAddress = ""
+    var placeChosen = false
     
     @IBOutlet weak var locationTextField: UITextView!
     struct NewPerson {
@@ -101,7 +104,6 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     }
 }
 
-
 @IBAction func findLocation(_ sender: UIButton) {
     let averageArray = findAverageLocation(arrayOfLocations: convertPeopleArrayToLocationArray()).components(separatedBy: ", ")
     let center = CLLocationCoordinate2D(latitude: Double(averageArray[0])!, longitude: Double(averageArray[1])!)
@@ -132,12 +134,34 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         self.locationTextField.text = "\(place.name) - \(self.chosenPlaceAddress)"
         print("Place address \(place.formattedAddress)")
         print("Place attributions \(place.attributions)")
+        self.calculateDistanceFromChosenPoint(latitude: self.chosenPlaceLat, longitude: self.chosenPlaceLong, array: &self.personArray)
+        self.placeChosen = true
     })
 }
     
-    func calculateDistanceFromChosenPoint(latitude: Double, longitude: Double, array: Array<NewPerson>) {
-        
+    func calculateDistanceFromChosenPoint(latitude: Double, longitude: Double, array: inout Array<NewPerson>) {
+        var distanceArrays = [Double]()
+        for person in array {
+            var latitudeDistance = latitude - person.latitude
+            var longitudeDistance = longitude - person.longitude
+            var latMiles = latitudeDistance * milesPerDegreeLatitude
+            var longMiles = longitudeDistance * milesPerDegreeLongitude
+            var totalDistance = sqrt(squareValue(value: latMiles) + squareValue(value: longMiles))
+            totalDistance = round(100.0 * totalDistance) / 100.0
+            distanceArrays.append(Double(totalDistance))
+            //person.distance = totalDistance
+        }
+        var count = 0
+        for member in distanceArrays {
+            personArray[count].distance = member
+            count += 1
+        }
         tableView.reloadData()
+    }
+    
+    func squareValue(value: Double) -> Double {
+        let squaredValue = value * value
+        return squaredValue
     }
 
 //Function to find places given a location
@@ -173,7 +197,7 @@ extension OverviewViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Person", for: indexPath) as! PeopleCell
-        cell.configurePeopleCell(name: personArray[indexPath.row].name, latitude: personArray[indexPath.row].latitude, longitude: personArray[indexPath.row].longitude, address: personArray[indexPath.row].formattedAddress)
+        cell.configurePeopleCell(name: personArray[indexPath.row].name, latitude: personArray[indexPath.row].latitude, longitude: personArray[indexPath.row].longitude, address: personArray[indexPath.row].formattedAddress, distance: personArray[indexPath.row].distance, placeChosen: placeChosen)
         print(personArray[indexPath.row].name)
         return cell
     }
