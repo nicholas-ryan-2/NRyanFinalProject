@@ -14,11 +14,8 @@ import GooglePlacePicker
 import GoogleMaps
 
 /*
- THings to fix/add
- Clean up code
  UI
  Edit mode
- Clear data
  type modification
  */
 
